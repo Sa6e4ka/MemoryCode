@@ -33,6 +33,58 @@ class Page(StatesGroup):
     state15 = State()
     state16 = State()
 
+class Page16(StatesGroup):
+    state1 = State()
+    state2 = State()
+    state3 = State()
+    state4 = State()
+    state5 = State()
+    state6 = State()
+    state7 = State()
+    state8 = State()
+    state9 = State()
+    state10 = State()
+
+class Page30(StatesGroup):
+    state1 = State()
+    state2 = State()
+    state3 = State()
+    state4 = State()
+    state5 = State()
+    state6 = State()
+    state7 = State()
+    state8 = State()
+    state9 = State()
+    state10 = State()
+
+class Page55(StatesGroup):
+    state1 = State()
+    state2 = State()
+    state3 = State()
+    state4 = State()
+    state5 = State()
+    state6 = State()
+    state7 = State()
+    state8 = State()
+    state9 = State()
+    state10 = State()
+
+class Page60(StatesGroup):
+    state1 = State()
+    state2 = State()
+    state3 = State()
+    state4 = State()
+    state5 = State()
+    state6 = State()
+    state7 = State()
+    state8 = State()
+    state9 = State()
+    state10 = State()
+
+class Free(StatesGroup):
+    state1 = State()
+    state2 = State()
+
 
 class Contact(StatesGroup):
     name = State()

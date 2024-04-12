@@ -81,4 +81,3 @@ def norm_files():
         print('STOOP')
         pass
     
-norm_files()

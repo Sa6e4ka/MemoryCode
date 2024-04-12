@@ -60,6 +60,7 @@ def auth(login, password):
     return session, response.json()['user']['name']
 
 
+
 def reset_password(email):
 
     json_data = {

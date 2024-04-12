@@ -9,8 +9,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from GPT import speechkit, promptedmodels
 
+from Logging.LoggerConfig import logger
 
-from Auxiliary.states import Page
+from Auxiliary.states import Page, Page16, Page30, Page55, Page60
 from Auxiliary.keybaords import startKB
 
 import time
@@ -21,7 +22,7 @@ trv = Router()
 
 
 @trv.callback_query(StateFilter(Page.state1), F.data == 'Голосовым вводом')
-async def table1(call : CallbackQuery, state: FSMContext):
+async def table1(call : CallbackQuery):
     await call.answer()
     await call.message.answer('Хорошо, сейчас вам будет задано несколько вопросов о человеке. Сначала введите имя, дату рождения и дату смерти вручную, а биографию состовим с помощью голосового ввода. Подробные инструкции будут даны чуть позже')
     time.sleep(2)
@@ -36,17 +37,38 @@ async def table2(message : Message, state: FSMContext):
     
 @trv.message(StateFilter(Page.state2), F.text)
 async def table3(message : Message, state: FSMContext):
-    await state.update_data(birth=message.text)
+    try:
+        if message.text[2] == '.' and message.text[5] == '.' and len(message.text) == 10 and int(message.text[0:2]) <= 31 and int(message.text[3:5]) <= 12:
+           
+            await state.update_data(birth=message.text)
 
-    await message.answer('Напишите его дату смерти в формате ДД.ММ.ГГГГ')    
-    await state.set_state(Page.state3)
+            await message.answer('Напишите его дату смерти в формате ДД.ММ.ГГГГ')    
+            await state.set_state(Page.state3)
+        else:
+            await message.answer('Пожалуйста, введит дату в формате <b>ДД.ММ.ГГГГ</b>\n\nНапример - 04.07.2005')
+    except:
+        logger.debug('FUCK (table3)')
+        await message.answer('Пожалуйста, введит дату в формате <b>ДД.ММ.ГГГГ</b>\n\nНапример - 04.07.2005')
+
 
 @trv.message(StateFilter(Page.state3), F.text)
 async def table4(message : Message, state: FSMContext):
-    await state.update_data(death=message.text)
+    try:
+        if message.text[2] == '.' and message.text[5] == '.' and len(message.text) == 10 and int(message.text[0:2]) <= 31 and int(message.text[3:5]) <= 12:
+            await state.update_data(death=message.text)
 
-    await message.answer('Загрузите фото')    
-    await state.set_state(Page.state4)
+            sd = await state.get_data()
+            birth = sd['birth']
+
+            lifelong = abs(int(birth[6:]) - int(message.text[6:]))
+            await state.update_data(lifelong=lifelong)
+            await message.answer('Загрузите фото')    
+
+            await state.set_state(Page.state4)
+    except Exception:
+        logger.debug('FUCK (table4)')
+        await message.answer('Пожалуйста, введит дату в формате <b>ДД.ММ.ГГГГ</b>\n\nНапример - 04.07.2005')
+
 
 
 @trv.message(StateFilter(Page.state4), F.photo)
@@ -55,9 +77,22 @@ async def table5(message : Message, state: FSMContext, bot: Bot):
         # Также нужно будет добавить обрезание картинок
         file_path= f'photos/{message.chat.id}_photo.jpg'
         await bot.download(message.photo[-1].file_id, file_path)
-        await message.answer('Отлчино!\n\nТеперь биография\n\nРас   скажите о детстве и семейной жизни умершего человека. Какие были особенности его семьи и родителей?\n\nПостарайтесь изложить свой ответ в виде истории, а не отдельных фактов и отрывков.\n\n<b>Ответ отправьте голосовым сообщением длиной не больше 30 секунд</b>')
         await state.update_data(photo= file_path)    
         await state.set_state(Page.state5)
+
+        sd = await state.get_data()
+
+        if sd['lifelong'] < 16 and sd['lifelong'] >= 0:
+            await message.answer('Теперь биография.\n\n<b>Ответ отправьте голосовым сообщением длиной не больше 30 секунд</b>')
+            await state.set_state(Page16.state1)
+        elif sd['lifelong'] >= 16 and sd['lifelong'] < 30:
+            await state.set_state(Page30.state1)
+        elif sd['lifelong'] >= 30 and sd['lifelong'] < 55:
+            await state.set_state(Page55.state1)
+        elif sd['lifelong'] >= 55 :
+            await state.set_state(Page60.state1)
+        else:
+            await message.answer('Ошибка')
     except Exception as e:
        await message.answer(text=e)
 

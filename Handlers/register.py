@@ -63,7 +63,7 @@ async def register_agree(call : CallbackQuery, state: FSMContext):
 @rr.callback_query(F.data == 'agree_Не согласен(на)')
 async def register_agree(call : CallbackQuery, state: FSMContext):
     await call.answer()
-    await call.message.answer(text='Well, KYS')
+    await call.message.answer(text='Хорошо, тогда, боимся, что вы не сможете продолжить регистрацию')
     await state.clear()
 
 
@@ -114,6 +114,7 @@ async def register_fourth(message: Message, state: FSMContext):
         
         await message.answer('Похоже, что аккаунт с данным email уже существует...\n\nПопробуйте зарегистрироваться еще раз или войдите', reply_markup=resetKB2.as_markup())
         await state.clear()
+
 
 @rr.callback_query(F.data=='reset1_Регистрация')
 async def reg_res(call: CallbackQuery):

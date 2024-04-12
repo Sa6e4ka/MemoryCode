@@ -15,7 +15,7 @@ from aiogram.client.default import DefaultBotProperties
 from dotenv import find_dotenv, load_dotenv
 load_dotenv(find_dotenv())
 
-# Имопртируем функцию создания базы данных
+# Имопртируем функцию создания базы данных  
 try:
     from Database.engine import create_db, session_maker
 except Exception as e:
@@ -43,7 +43,7 @@ dp = Dispatcher()
 from Auxiliary.middleware import DataBaseSession
 
 #Подключаем к диспетчеру все роутеры из содаваемых хендлеров.   
-dp.include_routers(sr, rr, lr, cr, trh, trv) 
+dp.include_routers(sr, rr, lr, cr, trv, trh, ) 
 
 
 # Добавляем основные "глобальные" хендлеры
