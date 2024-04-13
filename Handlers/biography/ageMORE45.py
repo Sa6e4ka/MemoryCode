@@ -9,6 +9,8 @@ from GPT import speechkit, promptedmodels
 from Logging.LoggerConfig import logger
 from Auxiliary.states import Page60
 
+from GPT.finalmodels import block_model_1,block_model_2
+
 import os
 
 mr21 = Router()
@@ -27,6 +29,7 @@ async def table6_0(message : Message, state: FSMContext, bot: Bot):
         block1_main_q = sd['block1_main_quest']
         last_ans = speechkit.short_files(file=file_path)
         # Здесь будет функция генерации вопроса
+
         question2='вопрос 2 о 45+ лет человеке (блок характера и личных качеств)'
         await message.answer(text=question2)
     
