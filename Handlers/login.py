@@ -8,7 +8,7 @@ from requests import exceptions
 from Auxiliary.states import Start, Page
 from Auxiliary.keybaords import resetKB, startKB
 
-from Assests import memorycode_API_requests
+from Helps import memorycode_API_requests
 from Logging.LoggerConfig import logger
 
 import time

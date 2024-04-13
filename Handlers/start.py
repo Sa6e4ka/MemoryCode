@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from Auxiliary.states import Start
 from Auxiliary.keybaords import startKB, agreeKB
 
-from Assests import memorycode_API_requests
+from Helps import memorycode_API_requests
 
 from Logging.LoggerConfig import logger
 
