@@ -23,12 +23,14 @@ except Exception as e:
 
 #Из папки handlers импортируем все хендлеры 
 from Handlers.start import sr
-from Handlers.table_hand import trh
 from Handlers.register import rr
 from Handlers.login import lr
 from Handlers.contact import cr
-from Handlers.table_voice import trv
-
+from Handlers.biography.biography_start import trv
+from Handlers.biography.ageUPTO18 import chldr
+from Handlers.biography.ageUPTO45 import mr12
+from Handlers.biography.ageMORE45 import mr21
+from Handlers.biography.WAR import wr
 # Из папки common импортируем команды
 from Auxiliary.commands import private
 
@@ -43,7 +45,7 @@ dp = Dispatcher()
 from Auxiliary.middleware import DataBaseSession
 
 #Подключаем к диспетчеру все роутеры из содаваемых хендлеров.   
-dp.include_routers(sr, rr, lr, cr, trv, trh, ) 
+dp.include_routers(sr, rr, lr, cr,chldr ,trv, mr12, mr21, wr) 
 
 
 # Добавляем основные "глобальные" хендлеры

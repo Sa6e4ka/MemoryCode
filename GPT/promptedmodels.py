@@ -5,7 +5,7 @@ dir= 'b1g0voaeihj99r85mvoi'
 # iam=os.getenv('IAM')
 api= 'AQVNzuqpGnVZ97YTghU4nDOvG6ZRyW4AIG2mbs3f'
 
-def sum(*questions, name, n):
+def sum(*questions, name, n=9):
 
     #Создаем список со словарями передаваемых сообщений
     messages = [

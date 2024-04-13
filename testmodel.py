@@ -106,10 +106,60 @@ text3 =  {
     }
 
 
-print(sum(
-    text1,
-    text2,
-    text3,
-    name='Sasha',
-    n=8,
-))
+# print(sum(
+#     text1,
+#     text2,
+#     text3,
+#     name='Sasha',
+#     n=8,
+# ))
+
+
+
+# PUT https://mc.dev.rand.agency/api/page/23647620
+# Accept: application/json
+# Content-Type: application/json;charset=UTF-8
+# Authorization: Bearer 190|bwn9iJVmi42enrFNmQOigWDCqWUWBgDHCXsp2QXZ
+import requests
+from fake_useragent import UserAgent
+def lalala():
+# Instantiate the UserAgent class
+    ua = UserAgent()
+    
+    # Get random user agents
+    random_ua = ua.random
+    headers = {
+        'Content-Type': 'application/json;charset=UTF-8',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer 1410|F9KvyyJcOUzqLa3TuWmiTnXiLUJEtUWB8DBJHhq4',
+        'User-Agent': random_ua,
+    }
+
+    params = {
+        "name": "Gay",
+        "page_type_id": "1",
+        "epitaph":"gayagyagya",
+        "start":"10.11.2010",
+        "start.day":"10",
+        "start.month":"11",
+        "start.year":"2010",
+        "end":"10.11.2020",
+        "end.day":"10",
+        "end.month":"11",
+        "end.year":"2020"
+        }
+
+    # with open('req.json',encoding='utf-8') as file:
+    #     f = file.read()
+
+    # params = f
+    id = 23647620
+    response = requests.put(
+        f'https://mc.dev.rand.agency/api/page/{id}',
+        headers=headers, params=params
+    )
+    print(response.text)
+
+lalala()
+
+# print('{"message":"The given data was invalid.","errors":{"name":["\u041f\u043e\u043b\u0435 \u0438\u043c\u044f \u043e\u0431\u044f\u0437\u0430\u0442\u0435\u043b\u044c\u043d\u043e \u0434\u043b\u044f \u0437\u0430\u043f\u043e\u043b\u043d\u0435\u043d\u0438\u044f."],"page_type_id":["\u041f\u043e\u043b\u0435 \u0438\u043c\u044f \u043e\u0431\u044f\u0437\u0430\u0442\u0435\u043b\u044c\u043d\u043e \u0434\u043b\u044f \u0437\u0430\u043f\u043e\u043b\u043d\u0435\u043d\u0438\u044f."],"epitaph":["\u041f\u043e\u043b\u0435 \u0438\u043c\u044f \u043e\u0431\u044f\u0437\u0430\u0442\u0435\u043b\u044c\u043d\u043e \u0434\u043b\u044f \u0437\u0430\u043f\u043e\u043b\u043d\u0435\u043d\u0438\u044f."],"start":["\u041f\u043e\u043b\u0435 \u0438\u043c\u044f \u043e\u0431\u044f\u0437\u0430\u0442\u0435\u043b\u044c\u043d\u043e \u0434\u043b\u044f \u0437\u0430\u043f\u043e\u043b\u043d\u0435\u043d\u0438\u044f."],"start.day":["\u041f\u043e\u043b\u0435 \u0438\u043c\u044f \u043e\u0431\u044f\u0437\u0430\u0442\u0435\u043b\u044c\u043d\u043e \u0434\u043b\u044f \u0437\u0430\u043f\u043e\u043b\u043d\u0435\u043d\u0438\u044f."],"start.month":["\u041f\u043e\u043b\u0435 \u0438\u043c\u044f \u043e\u0431\u044f\u0437\u0430\u0442\u0435\u043b\u044c\u043d\u043e \u0434\u043b\u044f \u0437\u0430\u043f\u043e\u043b\u043d\u0435\u043d\u0438\u044f."],"start.year":["\u041f\u043e\u043b\u0435 \u0438\u043c\u044f \u043e\u0431\u044f\u0437\u0430\u0442\u0435\u043b\u044c\u043d\u043e \u0434\u043b\u044f \u0437\u0430\u043f\u043e\u043b\u043d\u0435\u043d\u0438\u044f."],"end":["\u041f\u043e\u043b\u0435 \u0438\u043c\u044f \u043e\u0431\u044f\u0437\u0430\u0442\u0435\u043b\u044c\u043d\u043e \u0434\u043b\u044f \u0437\u0430\u043f\u043e\u043b\u043d\u0435\u043d\u0438\u044f."],"end.day":["\u041f\u043e\u043b\u0435 \u0438\u043c\u044f \u043e\u0431\u044f\u0437\u0430\u0442\u0435\u043b\u044c\u043d\u043e \u0434\u043b\u044f \u0437\u0430\u043f\u043e\u043b\u043d\u0435\u043d\u0438\u044f."],"end.month":["\u041f\u043e\u043b\u0435 \u0438\u043c\u044f \u043e\u0431\u044f\u0437\u0430\u0442\u0435\u043b\u044c\u043d\u043e \u0434\u043b\u044f \u0437\u0430\u043f\u043e\u043b\u043d\u0435\u043d\u0438\u044f."],"end.year":["\u041f\u043e\u043b\u0435 \u0438\u043c\u044f \u043e\u0431\u044f\u0437\u0430\u0442\u0435\u043b\u044c\u043d\u043e \u0434\u043b\u044f \u0437\u0430\u043f\u043e\u043b\u043d\u0435\u043d\u0438\u044f."]}}')

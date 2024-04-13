@@ -4,11 +4,7 @@ from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemo
 
 
 
-createKB= InlineKeyboardBuilder()
-list = ['Вручную', 'Голосовым вводом']
-for i in list:
-    createKB.button(text=i, callback_data=f'{i}')
-createKB.adjust(1,)
+
 
 FuckGoBack = InlineKeyboardBuilder()
 FuckGoBack.button(text='<< Назад', callback_data='agree_<< Назад')

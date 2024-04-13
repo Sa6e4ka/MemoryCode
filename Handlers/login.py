@@ -6,11 +6,12 @@ from aiogram.fsm.context import FSMContext
 from requests import exceptions
 
 from Auxiliary.states import Start, Page
-from Auxiliary.keybaords import resetKB, startKB, createKB
+from Auxiliary.keybaords import resetKB, startKB
 
 from Assests import memorycode_API_requests
 from Logging.LoggerConfig import logger
 
+import time
 # Login Router
 lr = Router()
 
@@ -59,10 +60,13 @@ async def login_p_hand(message: Message, state: FSMContext):
         sd = await state.get_data()
         try:
             data = memorycode_API_requests.auth(login=sd['mail'], password=sd['password'])
-            print(data)
-            await message.answer(f'Здравствуйте, {data[1]}\n\nКак вы бы хотели заполнить страницу памяти?', reply_markup=createKB.as_markup())
+
+            await message.answer(f'Здравствуйте, {data[1]}\n\nСейчас вам будет задано несколько вопросов о человеке.\n\nСначала введите имя, дату рождения и дату смерти.\n\n<b>Подробные инструкции по заполнению биографии будут даны чуть позже.</b>')
+            time.sleep(1)
+            await message.answer('<b>Как звали человека?</b>\n\nBведите только имя, фамилию и отчество')
             await state.set_state(Page.state1)
             await state.update_data(session=data[0])
-        except:
+        except Exception as e:
             await message.answer(f'Похоже, что вы неправильно ввели логин или пароль.\n\nВведите логин или восстановите пароль или зарегистрируйтесь', reply_markup=resetKB.as_markup())
             await state.set_state(login_email)
+            print(e)
