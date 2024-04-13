@@ -3,7 +3,7 @@ from aiogram.types import TelegramObject
 
 from typing import Callable, Dict, Any, Awaitable
 from sqlalchemy.ext.asyncio import async_sessionmaker
-
+# 
 # Промежуточный слой для работы базы данных
 class DataBaseSession(BaseMiddleware):
     def __init__(self, session_pool: async_sessionmaker):

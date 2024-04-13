@@ -46,7 +46,7 @@ from Auxiliary.middleware import DataBaseSession
 
 #Подключаем к диспетчеру все роутеры из содаваемых хендлеров.   
 dp.include_routers(sr, rr, lr, cr,chldr , trv, mr12, mr21, wr) 
-
+# 
 
 # Добавляем основные "глобальные" хендлеры
 @dp.message(Command('state'))

@@ -11,7 +11,7 @@ from Logging.LoggerConfig import logger
 
 # Contact Router
 cr = Router()
-
+# 
 name = Contact.name
 mail = Contact.mail
 phone = Contact.phone

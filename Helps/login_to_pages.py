@@ -12,7 +12,7 @@ def get_pages_from_email(login,password): #login - почта     password - п�
     'Content-Type': 'application/json',
     'Accept': 'application/json',
     }
-
+# 
     params = {
     "email": login,                 # параметры для запроса токена
     "password": password,

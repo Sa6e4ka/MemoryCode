@@ -3,3 +3,5 @@ venv/
 */__pycache__/
 Logging/*.txt
 Database/*.db
+photos/
+voices/
