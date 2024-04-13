@@ -41,11 +41,11 @@ bot= Bot(token=os.getenv('TOKEN'), default=DefaultBotProperties(parse_mode='HTML
 dp = Dispatcher()
 
 # Добавляем Middlewares 
-    # Чтобы использовать не одно конкретное событие, а любое можно заменить message на update
+    # Чтобы использовать не одно конкретное соб ытие, а любое можно заменить message на update
 from Auxiliary.middleware import DataBaseSession
 
 #Подключаем к диспетчеру все роутеры из содаваемых хендлеров.   
-dp.include_routers(sr, rr, lr, cr,chldr ,trv, mr12, mr21, wr) 
+dp.include_routers(sr, rr, lr, cr,chldr , trv, mr12, mr21, wr) 
 
 
 # Добавляем основные "глобальные" хендлеры
