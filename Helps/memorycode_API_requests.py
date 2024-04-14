@@ -122,7 +122,7 @@ def put(id, token):
 
 
 def put(data: dict):  # data is a dictionary
-    id = data['page_id']
+    id = data['page_id_5']
     file_name = data['photo']
     with open(file_name, 'rb') as f:
         image_data = f.read()
@@ -132,30 +132,29 @@ def put(data: dict):  # data is a dictionary
         "Accept-Language": "en-US,en;q=0.9,ru;q=0.8",
         "Connection": "keep-alive",
         "Content-Type": "application/json;charset=UTF-8",
-        'Authorization': data['access_token'],
-
+        'Authorization': f"Bearer {data['token']}"
     }
     params = {
         'name': data['name'],
         'page_type_id': "1",
         'epitaph': data['epitath'],
         "start": {
-            "day": data['start'][0] + data['start'][1],
-            "month": data['start'][3] + data['start'][4],
-            "year": data['start'][6] + data['start'][7] + data['start'][8] + data['start'][9]
+            "day": data['birth'][0] + data['birth'][1],
+            "month": data['birth'][3] + data['birth'][4],
+            "year": data['birth'][6] + data['birth'][7] + data['birth'][8] + data['birth'][9]
         },
         "end": {
-            "day": data['end'][0] + data['end'][1],
-            "month": data['end'][3] + data['end'][4],
-            "year": data['end'][6] + data['end'][7] + data['end'][8] + data['end'][9]
+            "day": data['death'][0] + data['birth'][1],
+            "month": data['death'][3] + data['death'][4],
+            "year": data['death'][6] + data['death'][7] + data['death'][8] + data['death'][9]
         },
         "main_image": f'data:image/jpg;base64,{image_base64}',
-        "author_epitaph": data['author_epitaph'],
+        "author_epitaph": data['auth_epi'],
         
         "biographies": [
         {
             "title": data['name'],
-            "description": "A long time ago in a galaxy far, far away...",
+            "description": data['bio'],
             "page_id": id,
             "order": 1,
             "checked": 'true',
@@ -166,12 +165,12 @@ def put(data: dict):  # data is a dictionary
             {
                 "page_id": id,
                 "title": "Место рождения",
-                "description": data['birth_place'],
+                "description": data['birthpalce'],
             },
             {
                 "page_id": id,
                 "title": "Место смерти",
-                "description": data['death_place'],
+                "description": data['deathplace'],
             }
 
         ]
@@ -179,13 +178,14 @@ def put(data: dict):  # data is a dictionary
 
     }
 
-    i = data['link_id']
+    i = data['page_id']
     url = f'https://mc.dev.rand.agency/api/page/{i}'
 
     res = requests.put(url, headers=headers, json=params)
     if res.status_code == 200:
         print('Success!')
-    else: print('Error...')
+    else: 
+        print('Error...')
 
 
 

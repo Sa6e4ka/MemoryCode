@@ -12,6 +12,8 @@ from Auxiliary.keybaords import epithKB
 from GPT.finalmodels import block_model_1, block_model_2, sum, epitath
 import os
 
+from Helps.memorycode_API_requests import put
+
 chldr = Router()
 
 @chldr.message(StateFilter(Page18.state1), or_f(F.voice, F.text))
@@ -184,8 +186,7 @@ async def table6_1(message : Message, state: FSMContext, bot: Bot):
         await state.clear()
 
 
-
-@chldr.callback_query(StateFilter(Page18.state10),F.data=='Gen')
+@chldr.callback_query(StateFilter(Page18.state4),F.data=='Gen')
 async def gen_epi(call : CallbackQuery, state: FSMContext):
     sd = await state.get_data()
 
@@ -217,3 +218,7 @@ async def table6_11(message : Message, state: FSMContext, bot: Bot):
 async def table6_11(message : Message, state: FSMContext, bot: Bot):
     await state.update_data(auth_epi = message.text)
     await message.answer('Эпитафия успешно сохранена!\n\nДанные успешно загружены на страницу. Нажмите на кнопку, чтобы посмотреть результат')
+
+    s = await state.get_data()
+    print(s)
+    put(data=s)

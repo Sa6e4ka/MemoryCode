@@ -11,7 +11,7 @@ from Auxiliary.states import PageWAR
 from Auxiliary.keybaords import epithKB
 
 from GPT.finalmodels import block_model_1,block_model_2, sum, epitath
-
+from Helps.memorycode_API_requests import put
 import os
 
 wr = Router()
@@ -604,5 +604,5 @@ async def table6_11(message : Message, state: FSMContext, bot: Bot):
 
     s = await state.get_data()
     print(s)
-
+    put(data=s)
 

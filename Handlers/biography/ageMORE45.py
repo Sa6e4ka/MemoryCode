@@ -10,6 +10,8 @@ from Logging.LoggerConfig import logger
 from Auxiliary.states import Page60
 from Auxiliary.keybaords import epithKB
 
+from Helps.memorycode_API_requests import put
+
 from GPT.finalmodels import block_model_1,block_model_2, sum, epitath
 
 import os
@@ -587,5 +589,6 @@ async def table6_11(message : Message, state: FSMContext, bot: Bot):
     await message.answer('Эпитафия успешно сохранена!')
 
     s = await state.get_data()
+    put(data=s)
     print(s)
 

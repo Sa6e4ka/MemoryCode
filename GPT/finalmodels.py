@@ -151,7 +151,7 @@ def sum(*answers, birth, death, name):
         "modelUri": f"gpt://{dir}/yandexgpt-lite",
         "completionOptions": {
             "stream": False,
-            "temperature": 1,
+            "temperature": 0.5,
             "maxTokens": "10000"
         },
         "messages" : messages
@@ -176,7 +176,7 @@ def epitath(bio):
         "completionOptions": {
             "stream": False,
             "temperature": 0.2,
-            "maxTokens": "5000" 
+            "maxTokens": "100" 
         },
 
     

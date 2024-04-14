@@ -12,6 +12,7 @@ from Auxiliary.states import Page45
 from Auxiliary.keybaords import epithKB
 from GPT.finalmodels import block_model_1, block_model_2, sum, epitath
 
+from Helps.memorycode_API_requests import put
 import os
 
 mr12 = Router()
@@ -510,17 +511,19 @@ async def table6_1(message : Message, state: FSMContext, bot: Bot):
 @mr12.callback_query(StateFilter(Page45.state10),F.data=='Gen')
 async def gen_epi(call : CallbackQuery, state: FSMContext):
     sd = await state.get_data()
-
+    e =epitath(sd['bio'])
     await call.answer()
-    await call.message.answer(f'Сгенерированная нейросетью эпитафия:\n\n<b>{epitath(bio=sd['bio'])}</b>\n\nТеперь напишите имя того, кого хотели бы считать автором эпитафии.')
+    await call.message.answer(f'Сгенерированная нейросетью эпитафия:\n\n<b>{e}</b>\n\nТеперь напишите имя того, кого хотели бы считать автором эпитафии.')
 
-    await state.update_data(epith=epitath(sd['bio']))
+    await state.update_data(epitath=e)
     await state.set_state(Page45.state11)
 
 @mr12.message(StateFilter(Page45.state11), F.text)
 async def table6_11(message : Message, state: FSMContext, bot: Bot):
     await state.update_data(auth_epi = message.text)
     await message.answer('Эпитафия успешно сохранена!')
+    s = await state.get_data()
+    put(s)
 
 @mr12.callback_query(StateFilter(Page45.state11), F.data=='Write')
 async def gen_epi(call : CallbackQuery, state: FSMContext):
@@ -536,7 +539,11 @@ async def table6_11(message : Message, state: FSMContext, bot: Bot):
     await state.set_state(Page45.state12)
 
 @mr12.message(StateFilter(Page45.state12), F.text)
-async def table6_11(message : Message, state: FSMContext, bot: Bot):
+async def table6_12311(message : Message, state: FSMContext, bot: Bot):
     await state.update_data(auth_epi = message.text)
     await message.answer('Эпитафия успешно сохранена!')
 
+    s = await state.get_data()
+    print(s)
+
+    put(data=s)

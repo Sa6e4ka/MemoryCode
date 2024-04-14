@@ -35,13 +35,14 @@ def get_pages_from_email(login,password): #login - почта     password - п�
     get = getter.json()
 
     result = {}     
-
     for field in get:
+        id = field['id']
         name = field['name']       # парсинг полученной страницы
         page_id = field['link'][-8:]                                      #Парсятся поля name и link, для получения названия страницы и id (link - формате ссылке, где последние 8 символов - id)
-        result[name] = page_id
+        result[name] = [page_id,id]
 
     return result, token
+
 
 
 

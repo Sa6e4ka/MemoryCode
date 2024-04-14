@@ -69,7 +69,7 @@ async def login_p_hand(message: Message, state: FSMContext):
 
         chKB = InlineKeyboardBuilder()
         for k, v in data[0].items():
-            chKB.button(text=str(k), callback_data=f"pages_{v}")
+            chKB.button(text=str(k), callback_data=f"pages_{v[0]}_{v[1]}")
         chKB.adjust(1,)
 
         await message.answer('Здравствуйте!\n\nвыберите страницу, которую хотите отредактировать', reply_markup=chKB.as_markup())
@@ -84,12 +84,13 @@ async def login_p_hand(message: Message, state: FSMContext):
 async def login_m_had(call : CallbackQuery, state: FSMContext):
     sd = await state.get_data()
     data1 = login_to_pages.get_pages_from_email(login=sd['mail'], password=sd['password'])
-    page_id = call.data.split("_")[-1]
+    page_id = call.data.split("_")[1]
+    page_id_5 = call.data.split("_")[2]
 
     await call.answer()
 
     await state.set_state(Page.state1)
-    await state.update_data(page_id=page_id, token=data1[1])
+    await state.update_data(page_id=page_id, token=data1[1], page_id_5= page_id_5)
 
     s= await state.get_data()
     print(s)
