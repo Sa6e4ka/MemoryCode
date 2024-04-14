@@ -22,7 +22,7 @@ def short_files(file):
         
         return response.json()['result']
     except:
-        print(response.text)
+        print(response.status_code)
 
 
 def norm_files():

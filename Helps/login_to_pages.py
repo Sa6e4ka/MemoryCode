@@ -41,7 +41,7 @@ def get_pages_from_email(login,password): #login - почта     password - п�
         page_id = field['link'][-8:]                                      #Парсятся поля name и link, для получения названия страницы и id (link - формате ссылке, где последние 8 символов - id)
         result[name] = page_id
 
-    return result
+    return result, token
 
 
 
@@ -50,3 +50,5 @@ if __name__ == '__main__':
     password = 'wHe7fVE7'
     pages = get_pages_from_email(login=email,password=password)
     print(pages)
+
+ 

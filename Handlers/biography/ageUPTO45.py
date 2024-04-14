@@ -1,6 +1,6 @@
 from aiogram import F,Router, Bot
 from aiogram.filters import StateFilter, or_f
-from aiogram.types import Message
+from aiogram.types import Message, CallbackQuery
 from aiogram.types.web_app_info import WebAppInfo
 from aiogram.fsm.context import FSMContext
 
@@ -9,7 +9,8 @@ from GPT import speechkit, promptedmodels
 from Logging.LoggerConfig import logger
 from Auxiliary.states import Page45
 
-from GPT.finalmodels import block_model_1, block_model_2, sum
+from Auxiliary.keybaords import epithKB
+from GPT.finalmodels import block_model_1, block_model_2, sum, epitath
 
 import os
 
@@ -458,7 +459,6 @@ async def table6_1(message : Message, state: FSMContext, bot: Bot):
         sd = await state.get_data()
 
         print(sd)
-        anslist = []
         
         bio = sum(
             sd['ans1'], 
@@ -476,9 +476,9 @@ async def table6_1(message : Message, state: FSMContext, bot: Bot):
             death=sd['death'],
         )
 
-        await message.answer(text=f'Ваша биография:\n\n<b>{bio}</b>')
+        await message.answer(text=f'Ваша биография:\n\n<b>{bio}</b>', reply_markup=epithKB.as_markup())
         # Здесь будет функция суммаризации ответов на вопросы 
-        await state.update_data(sum=bio)
+        await state.update_data(bio=bio)
         await state.clear()
 
     elif message.text:
@@ -487,9 +487,56 @@ async def table6_1(message : Message, state: FSMContext, bot: Bot):
         sd = await state.get_data()
 
         print(sd)
-        anslist = [sd['ans1'], sd['ans2'], sd['ans3'],  sd['ans4'], sd['ans5'], sd['ans6'], sd['ans7'], sd['ans8'], sd['ans9'], sd['ans10']]
+        bio = sum(
+            sd['ans1'], 
+            sd['ans2'], 
+            sd['ans3'],  
+            sd['ans4'], 
+            sd['ans5'], 
+            sd['ans6'], 
+            sd['ans7'], 
+            sd['ans8'], 
+            sd['ans9'], 
+            sd['ans10'],
+            name=sd['name'],
+            birth=sd['birth'],
+            death=sd['death'],
+        )
 
-        await message.answer(text='Ваша биография:\n\n<b>Тут предполагается какой-то текст, сгенерированный моделью</b>')
+        await message.answer(text=f'<b>Ваша биография:</b>\n\n{bio}\n\n<b>Теперь вы можете сгенерировать эпитафию или написать ее сами</b>', reply_markup=epithKB.as_markup())
         # Здесь будет функция суммаризации ответов на вопросы 
-        await state.update_data(sum='sum of smth')
-        await state.clear()
+        await state.update_data(bio=bio)
+
+@mr12.callback_query(StateFilter(Page45.state10),F.data=='Gen')
+async def gen_epi(call : CallbackQuery, state: FSMContext):
+    sd = await state.get_data()
+
+    await call.answer()
+    await call.message.answer(f'Сгенерированная нейросетью эпитафия:\n\n<b>{epitath(bio=sd['bio'])}</b>\n\nТеперь напишите имя того, кого хотели бы считать автором эпитафии.')
+
+    await state.update_data(epith=epitath(sd['bio']))
+    await state.set_state(Page45.state11)
+
+@mr12.message(StateFilter(Page45.state11), F.text)
+async def table6_11(message : Message, state: FSMContext, bot: Bot):
+    await state.update_data(auth_epi = message.text)
+    await message.answer('Эпитафия успешно сохранена!')
+
+@mr12.callback_query(StateFilter(Page45.state11), F.data=='Write')
+async def gen_epi(call : CallbackQuery, state: FSMContext):
+    await call.answer()
+    await call.message.answer(f'Напишите свою эпитафию:')
+
+
+@mr12.message(StateFilter(Page45.state11), F.text)
+async def table6_11(message : Message, state: FSMContext, bot: Bot):
+    await state.update_data(epitath = message.text)
+    await message.answer('Напишите автора эпитафии\n\n(им можете стать вы или кто-то другой)')
+
+    await state.set_state(Page45.state12)
+
+@mr12.message(StateFilter(Page45.state12), F.text)
+async def table6_11(message : Message, state: FSMContext, bot: Bot):
+    await state.update_data(auth_epi = message.text)
+    await message.answer('Эпитафия успешно сохранена!')
+

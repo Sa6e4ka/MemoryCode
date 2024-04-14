@@ -1,7 +1,7 @@
 # from Logging.LoggerConfig import logger
 import requests
 
-dir= 'b1g0voaeihj99r85mvoi'
+dir= 'b1g0voaeihj99r85mvoi' # TOdo: dir - зарезерироаное имя строеной функции, заменить
 api= 'AQVNzuqpGnVZ97YTghU4nDOvG6ZRyW4AIG2mbs3f'
 
 
@@ -62,8 +62,7 @@ def block_model_2(prompt, block_main_question, main_question_ans, second_questio
             "temperature": 0.3,
             "maxTokens": "5000"
         },
-# 
-    
+
         "messages":  [
             {
                 "role" : "system",
@@ -120,6 +119,11 @@ def sum(*answers, birth, death, name):
             связный текст. Стоит учесть, что тект может являться результаотом распознавания голосовых, поэтому в нем могут присутствовать 
             лишние фразу, вставки слов паразитов и т.п. Нужно их удалить и сделать текст привлекательным для чтения.
 
+            Тебе нужно будет разделить полученный и уже обработанный тект на три логические части и именовать их как
+            1. вступление
+            2. Продолжение
+            3. Заключение 
+
             Как результат пользователю нужно выдать только биографию без каких либо замечаний, примечаний, вопросов, пометок.  выделать текст можно только
             разделяя его на абзацы и если хочешь сделать тект жирным, то обособляй его тегом <b>Какой-то текст</b>.
 
@@ -147,8 +151,8 @@ def sum(*answers, birth, death, name):
         "modelUri": f"gpt://{dir}/yandexgpt-lite",
         "completionOptions": {
             "stream": False,
-            "temperature": 0.3,
-            "maxTokens": "5000"
+            "temperature": 1,
+            "maxTokens": "10000"
         },
         "messages" : messages
     }
@@ -163,4 +167,48 @@ def sum(*answers, birth, death, name):
         
         return result["result"]["alternatives"][0]["message"]["text"]
     except requests.exceptions as e:
+        return f"Ошибка : {response.status_code} или {e}"
+
+
+def epitath(bio):
+    prompt = {
+        "modelUri": f"gpt://{dir}/yandexgpt-lite",
+        "completionOptions": {
+            "stream": False,
+            "temperature": 0.2,
+            "maxTokens": "5000" 
+        },
+
+    
+        "messages":  [
+            {
+                "role" : "system",
+                "text" : f'''
+        Модель должна анализировать предоставленную биографическую информацию о человеке.
+        На основе этой информации модель должна создать короткий текст, который мог бы использоваться как эпитафия на могиле или в памятнике усопшего.
+        Эпитафия должна быть в стиле, подходящем для данной персоны, учитывая их достижения, характер, вклад в общество и т. д.
+        Модель не должна добавлять никаких дополнительных комментариев, пометок или выделений текста в своем ответе. Она должна предоставить только эпитафию.
+
+        Пример вывода:
+
+        "Здесь покоится великий поэт Александр Сергеевич Пушкин,
+        Который своими стихами в сердца вечно вплетал счастье и грусть.
+        Его слова будут жить в наших сердцах навсегда,
+        Как вечный источник вдохновения и мудрости."
+        '''         
+            }
+        ]
+                }
+      
+    url = "https://llm.api.cloud.yandex.net/foundationModels/v1/completion"
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Api-Key {api}"}
+    try:
+        response = requests.post(url, headers=headers, json=prompt)
+        result = response.json()
+        
+        return result["result"]["alternatives"][0]["message"]["text"]
+    except Exception as e:
+        # logger.debug(f"Ошибка в запросе к GPT в функции block1_model_1: {e}")
         return f"Ошибка : {response.status_code} или {e}"

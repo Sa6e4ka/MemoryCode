@@ -44,6 +44,10 @@ class Page18(StatesGroup):
     state8 = State()
     state9 = State()
     state10 = State()
+    state11 = State()
+    state12 = State()
+    state13 = State()
+    state14 = State()
 
 class Page45(StatesGroup):
     state1 = State()
@@ -56,6 +60,10 @@ class Page45(StatesGroup):
     state8 = State()
     state9 = State()
     state10 = State()
+    state11 = State()
+    state12 = State()
+    state13 = State()
+    state14 = State()
 
 class Page60(StatesGroup):
     state1 = State()
@@ -68,7 +76,10 @@ class Page60(StatesGroup):
     state8 = State()
     state9 = State()
     state10 = State()
-# 
+    state11 = State()
+    state12 = State()
+    state13 = State()
+    state14 = State()   
 
 
 class PageWAR(StatesGroup):
@@ -82,7 +93,11 @@ class PageWAR(StatesGroup):
     state8 = State()
     state9 = State()
     state10 = State()
-
+    state11 = State()
+    state12 = State()
+    state13 = State()
+    state14 = State()
+    
 class Free(StatesGroup):
     state1 = State()
     state2 = State()

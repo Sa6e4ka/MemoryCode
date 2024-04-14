@@ -81,11 +81,12 @@ def sum(*questions, name, n=9):
 
     response = requests.post(url, headers=headers, json=prompt)
     result = response.json()
+
     if response.status_code == 200:
         return result["result"]["alternatives"][0]["message"]["text"]
-    else:
-        print(response.text)
-        return f'Ошибка в запросе: код {response.status_code}'
+
+    print(response.text)
+    return f'Ошибка в запросе: код {response.status_code}'
     
 
 
@@ -141,8 +142,7 @@ def jun(name, ans):
     result = response.json()
     if response.status_code == 200:
         return result["result"]["alternatives"][0]["message"]["text"]
-    else:
-        return f'Ошибка в запросе: код {response.status_code}'
+    return f'Ошибка в запросе: код {response.status_code}'
 
 
 def mid(name, ans):
@@ -197,7 +197,4 @@ def mid(name, ans):
     result = response.json()
     if response.status_code == 200:
         return result["result"]["alternatives"][0]["message"]["text"]
-    else:
-        return f'Ошибка в запросе: код {response.status_code}'
-    
-
+    return f'Ошибка в запросе: код {response.status_code}'
