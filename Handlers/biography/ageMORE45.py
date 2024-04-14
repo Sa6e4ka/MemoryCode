@@ -203,14 +203,32 @@ async def table6_1(message : Message, state: FSMContext, bot: Bot):
     elif message.text:
 
         sd = await state.get_data()
-
-        last_quest = sd['block2_main_quest']
-        last_ans = message.text
     
-        question2 = 'вопрос 5 о 45+ лет человеке (блок отношений с другими людьми)'
+        question2 = block_model_1(
+            block_main_question= sd['block2_main_quest'],
+            main_question_ans= message.text,
+            prompt='''Ты задаешь вопрос пользователю, который рассказывает о человеке, умершем в возрасте от 18 до 45 лет. 
+            Перед тобой вопрос, который был задан пользователю и ответ на него (со стороны пользователя). 
+
+            Ты должен задать новый вопрос, который поможет пользователю раскрыть
+            те детали семейных, дружеских отношений человека с другими людьми. Если пользователь упоминал 
+            в своем ответе на предыдущий впорос то, что у человека при жизни были внуки, 
+            то обязательно задай вопрос о том, как он к ним относился. Удели больше внимания семейной жизни человека 
+            его привязанностям к другим людям.
+
+            Постарайся раскрыть те подтемы, которые пользователь не раскрыл в ответе на предыдущий впорос.
+            Обязательно затронь семью человека, его брак. То насколько он счастлив в браке. О его отношениях с братьями, сестрами, если
+            они были и эти темы не упоминались в разговре ранее.
+
+            Будь тактичным, не задавай мрачно окрашенных эмоционально вопросов, это модет испугать пользователя
+            Будь доброжелателен и, не касайся темы смерти человека в вопросах.
+
+            Будь внимателен в том, что тебе нежно предоставить только 1 вопрос пользователю вне зависимости от того, какой объем материала он тебе дал
+            ''')
+        
         await message.answer(text=question2)
 
-        await state.update_data(ans4=message.text, block2_quest3=question2)
+        await state.update_data(ans4=message.text, block2_quest2=question2)
         await state.set_state(Page60.state5)
 
 
@@ -362,7 +380,7 @@ async def table6_1(message : Message, state: FSMContext, bot: Bot):
 
         question2 = block_model_1(
             block_main_question= sd['block3_main_q'],
-            main_question_ans= speechkit.short_files(file=file_path),
+            main_question_ans= message.text,
             prompt='''
             Ты задаешь вопрос пользователю, который рассказывает о человеке, умершем в возрасте от 18 до 45 лет. 
             Перед тобой вопрос, который был задан пользователю и ответ на него (со стороны пользователя). 
@@ -445,7 +463,7 @@ async def table6_1(message : Message, state: FSMContext, bot: Bot):
         question3 = block_model_2(
             block_main_question=sd['block3_main_q'],
             main_question_ans = sd['ans7'],
-            second_answer= speechkit.short_files(file=file_path),
+            second_answer= message.text,
             second_question=sd['block3_quest2'],
             prompt='''
             Ты задаешь вопрос пользователю, который рассказывает о человеке, умершем в возрасте от 18 до 45 лет. 
@@ -526,7 +544,7 @@ async def table6_1(message : Message, state: FSMContext, bot: Bot):
 
         await message.answer(text=f'Ваша биография:\n\n<b>{bio}</b>')
         # Здесь будет функция суммаризации ответов на вопросы 
-        await state.update_data(sum=bio)
+        await state.update_data(bio=bio)
 
     elif message.text:
         await state.update_data(ans10=message.text)
@@ -549,21 +567,21 @@ async def table6_1(message : Message, state: FSMContext, bot: Bot):
         birth=sd['birth'],
         death=sd['death'],
         )
-        await message.answer(text=f'Ваша биография:\n\n<b>{bio}</b>')
+        await message.answer(text=f'Ваша биография:\n\n<b>{bio}</b>', reply_markup=epithKB.as_markup())
         # Здесь будет функция суммаризации ответов на вопросы 
-        await state.update_data(sum=bio)
-
+        await state.update_data(bio=bio)
 
 
 @mr21.callback_query(StateFilter(Page60.state10),F.data=='Gen')
 async def gen_epi(call : CallbackQuery, state: FSMContext):
     sd = await state.get_data()
-
+    e = epitath(bio=sd['bio'], name=sd['name'])
     await call.answer()
-    await call.message.answer(f'Сгенерированная нейросетью эпитафия:\n\n<b>{epitath(bio=sd['bio'], name=sd['name'])}</b>\n\nТеперь напишите имя того, кого хотели бы считать автором эпитафии.')
+    await call.message.answer(f'Сгенерированная нейросетью эпитафия:\n\n<b>{e}</b>\n\nТеперь напишите имя того, кого хотели бы считать автором эпитафии.')
 
-    await state.update_data(epith=epitath(sd['bio']))
+    await state.update_data(epitath=e)
     await state.set_state(Page60.state11)
+
 
 @mr21.message(StateFilter(Page60.state11), F.text)
 async def table6_11(message : Message, state: FSMContext, session : AsyncSession):
@@ -572,11 +590,14 @@ async def table6_11(message : Message, state: FSMContext, session : AsyncSession
     await message.answer('Эпитафия успешно сохранена!\n\nТеперь вы можете посмотреть страницу, нажав на кнопку', reply_markup=watch(id=s['page_id']))
     await history(session=session, data=s)
     put(s)
+    await state.clear()
 
-@mr21.callback_query(StateFilter(Page60.state11), F.data=='Write')
+
+@mr21.callback_query(StateFilter(Page60.state10), F.data=='Write')
 async def gen_epi(call : CallbackQuery, state: FSMContext):
     await call.answer()
     await call.message.answer(f'Напишите свою эпитафию:')
+    await state.set_state(Page60.state11)
 
 
 @mr21.message(StateFilter(Page60.state11), F.text)
@@ -586,6 +607,7 @@ async def table6_11(message : Message, state: FSMContext, bot: Bot):
 
     await state.set_state(Page60.state12)
 
+
 @mr21.message(StateFilter(Page60.state12), F.text)
 async def table6_11(message : Message, state: FSMContext, bot: Bot):
     await state.update_data(auth_epi = message.text)
@@ -593,4 +615,6 @@ async def table6_11(message : Message, state: FSMContext, bot: Bot):
     await message.answer('Эпитафия успешно сохранена!\n\nТеперь вы можете посмотреть страницу, нажав на кнопку', reply_markup=watch(id=s['page_id']))
     put(data=s)
     print(s)
+    await state.clear()
+
 

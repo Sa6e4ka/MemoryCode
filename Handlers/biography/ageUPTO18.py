@@ -164,7 +164,7 @@ async def table6_1(message : Message, state: FSMContext, bot: Bot):
         print(sum_bio)
         await message.answer(text=f'Ваша биография:\n\n<b>{sum_bio}</b>', reply_markup=epithKB.as_markup())
 
-        await state.update_data(sum=sum_bio)
+        await state.update_data(bio=sum_bio)
 
     elif message.text:
         
@@ -183,8 +183,7 @@ async def table6_1(message : Message, state: FSMContext, bot: Bot):
         print(sum_bio)
         await message.answer(text=f'Ваша биография:\n\n<b>{sum_bio}</b>',reply_markup=epithKB.as_markup())
 
-        await state.update_data(sum=sum_bio)
-        await state.clear()
+        await state.update_data(bio=sum_bio)
 
 
 @chldr.callback_query(StateFilter(Page18.state4),F.data=='Gen')
@@ -193,23 +192,24 @@ async def gen_epi(call : CallbackQuery, state: FSMContext):
     epith = epitath(sd['bio'], sd['name'])
     await call.answer()
     await call.message.answer(f'Сгенерированная нейросетью эпитафия:\n\n<b>{epith}</b>\n\nТеперь напишите имя того, кого хотели бы считать автором эпитафии.')
+    await state.update_data(epitath=epith)
+    await state.set_state(Page18.state5)
 
-    await state.update_data(epith=epith)
-    await state.set_state(Page18.state11)
-
-@chldr.message(StateFilter(Page18.state11), F.text)
+@chldr.message(StateFilter(Page18.state5), F.text)
 async def table6_11(message : Message, state: FSMContext, session: AsyncSession):
     await state.update_data(auth_epi = message.text)
     s = await state.get_data()
     await message.answer('Эпитафия успешно сохранена!\n\nТеперь вы можете посмотреть страницу, нажав на кнопку', reply_markup=watch(id=s['page_id']))
-    await history(session=session, data=s)
+    # await history(session=session, data=s)
     put(s)
+    await state.clear()
 
-@chldr.callback_query(StateFilter(Page18.state11), F.data=='Write')
+
+@chldr.callback_query(StateFilter(Page18.state4), F.data=='Write')
 async def gen_epi(call : CallbackQuery, state: FSMContext):
     await call.answer()
     await call.message.answer(f'Напишите свою эпитафию:')
-
+    await state.set_state(Page18.state11)
 
 @chldr.message(StateFilter(Page18.state11), F.text)
 async def table6_11(message : Message, state: FSMContext, bot: Bot):
@@ -223,6 +223,7 @@ async def table6_11(message : Message, state: FSMContext, session: AsyncSession)
     await state.update_data(auth_epi = message.text)
     s = await state.get_data()
     await message.answer('Эпитафия успешно сохранена!\n\nТеперь вы можете посмотреть страницу, нажав на кнопку', reply_markup=watch(id=s['page_id']))
-    await history(session=session, data=s)
+    # await history(session=session, data=s)
     print(s)
     put(data=s)
+    await state.clear()

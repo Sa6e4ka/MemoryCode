@@ -526,6 +526,8 @@ async def table6_11(message : Message, state: FSMContext, session: AsyncSession)
     await message.answer('Эпитафия успешно сохранена!\n\nТеперь вы можете посмотреть страницу, нажав на кнопку', reply_markup=watch(id=s['page_id']))
     await history(session=session, data=s)
     put(s)
+    await state.clear()
+
 
 @mr12.callback_query(StateFilter(Page45.state11), F.data=='Write')
 async def gen_epi(call : CallbackQuery, state: FSMContext):
@@ -549,4 +551,6 @@ async def table6_12311(message : Message, state: FSMContext, session: AsyncSessi
     await history(session=session, data=s)
 
     put(data=s)
+    await state.clear()
+
 '67024259'

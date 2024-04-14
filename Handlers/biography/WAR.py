@@ -542,7 +542,7 @@ async def table6_1(message : Message, state: FSMContext, bot: Bot):
 
         await message.answer(text=f'Ваша биография:\n\n<b>{bio}</b>', reply_markup=epithKB.as_markup())
         # Здесь будет функция суммаризации ответов на вопросы 
-        await state.update_data(sum=bio)
+        await state.update_data(bio=bio)
 
     elif message.text:
         await state.update_data(ans10=message.text)
@@ -567,7 +567,7 @@ async def table6_1(message : Message, state: FSMContext, bot: Bot):
         )
         await message.answer(text=f'Ваша биография:\n\n<b>{bio}</b>', reply_markup=epithKB.as_markup())
         # Здесь будет функция суммаризации ответов на вопросы 
-        await state.update_data(sum=bio)
+        await state.update_data(bio=bio)
 
 
 @wr.callback_query(StateFilter(PageWAR.state10),F.data=='Gen')
@@ -577,7 +577,7 @@ async def gen_epi(call : CallbackQuery, state: FSMContext):
     await call.answer()
     await call.message.answer(f'Сгенерированная нейросетью эпитафия:\n\n<b>{epith}</b>\n\nТеперь напишите имя того, кого хотели бы считать автором эпитафии.')
 
-    await state.update_data(epith=epith)
+    await state.update_data(epitath=epith)
     await state.set_state(PageWAR.state11)
 
 @wr.message(StateFilter(PageWAR.state11), F.text)
@@ -587,12 +587,14 @@ async def table6_11(message : Message, state: FSMContext, bot: Bot, session : As
     await message.answer('Эпитафия успешно сохранена!\n\nТеперь вы можете посмотреть страницу, нажав на кнопку', reply_markup=watch(id=s['page_id']))
     await history(session=session, data=s)
     put(s)
+    await state.clear()
 
-@wr.callback_query(StateFilter(PageWAR.state11), F.data=='Write')
+
+@wr.callback_query(StateFilter(PageWAR.state10), F.data=='Write')
 async def gen_epi(call : CallbackQuery, state: FSMContext):
     await call.answer()
     await call.message.answer(f'Напишите свою эпитафию:')
-
+    await state.set_state(PageWAR.state11)
 
 @wr.message(StateFilter(PageWAR.state11), F.text)
 async def table6_11(message : Message, state: FSMContext, bot: Bot):
@@ -609,4 +611,6 @@ async def table6_11(message : Message, state: FSMContext, session: AsyncSession)
     await history(session=session, data=s)
     print(s)
     put(data=s)
+    await state.clear()
+
 
