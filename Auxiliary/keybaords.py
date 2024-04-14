@@ -8,6 +8,10 @@ FuckGoBack = InlineKeyboardBuilder()
 FuckGoBack.button(text='<< Назад', callback_data='agree_<< Назад')
 FuckGoBack.adjust(1,)
 
+def watch(id):
+    watchKB = InlineKeyboardBuilder()
+    watchKB.button(text='Посмотреть страницу', web_app=WebAppInfo(url=f'https://mc.dev.rand.agency/page/{id}'))
+    return watchKB.adjust(1,).as_markup()
 
 startKB = InlineKeyboardBuilder()
 

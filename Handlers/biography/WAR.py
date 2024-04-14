@@ -4,11 +4,14 @@ from aiogram.types import Message, CallbackQuery
 from aiogram.types.web_app_info import WebAppInfo
 from aiogram.fsm.context import FSMContext
 
+from Database.orm_querry import history
+
+
 from sqlalchemy.ext.asyncio import AsyncSession
 from GPT import speechkit, promptedmodels
 from Logging.LoggerConfig import logger
 from Auxiliary.states import PageWAR
-from Auxiliary.keybaords import epithKB
+from Auxiliary.keybaords import epithKB, watch
 
 from GPT.finalmodels import block_model_1,block_model_2, sum, epitath
 from Helps.memorycode_API_requests import put
@@ -540,7 +543,6 @@ async def table6_1(message : Message, state: FSMContext, bot: Bot):
         await message.answer(text=f'Ваша биография:\n\n<b>{bio}</b>', reply_markup=epithKB.as_markup())
         # Здесь будет функция суммаризации ответов на вопросы 
         await state.update_data(sum=bio)
-        await state.clear()
 
     elif message.text:
         await state.update_data(ans10=message.text)
@@ -566,23 +568,25 @@ async def table6_1(message : Message, state: FSMContext, bot: Bot):
         await message.answer(text=f'Ваша биография:\n\n<b>{bio}</b>', reply_markup=epithKB.as_markup())
         # Здесь будет функция суммаризации ответов на вопросы 
         await state.update_data(sum=bio)
-        await state.clear()
 
 
 @wr.callback_query(StateFilter(PageWAR.state10),F.data=='Gen')
 async def gen_epi(call : CallbackQuery, state: FSMContext):
     sd = await state.get_data()
-
+    epith = epitath(bio=sd['bio'], name=sd['name'])
     await call.answer()
-    await call.message.answer(f'Сгенерированная нейросетью эпитафия:\n\n<b>{epitath(bio=sd['bio'])}</b>\n\nТеперь напишите имя того, кого хотели бы считать автором эпитафии.')
+    await call.message.answer(f'Сгенерированная нейросетью эпитафия:\n\n<b>{epith}</b>\n\nТеперь напишите имя того, кого хотели бы считать автором эпитафии.')
 
-    await state.update_data(epith=epitath(sd['bio']))
+    await state.update_data(epith=epith)
     await state.set_state(PageWAR.state11)
 
 @wr.message(StateFilter(PageWAR.state11), F.text)
-async def table6_11(message : Message, state: FSMContext, bot: Bot):
+async def table6_11(message : Message, state: FSMContext, bot: Bot, session : AsyncSession):
     await state.update_data(auth_epi = message.text)
-    await message.answer('Эпитафия успешно сохранена!')
+    s = await state.get_data()
+    await message.answer('Эпитафия успешно сохранена!\n\nТеперь вы можете посмотреть страницу, нажав на кнопку', reply_markup=watch(id=s['page_id']))
+    await history(session=session, data=s)
+    put(s)
 
 @wr.callback_query(StateFilter(PageWAR.state11), F.data=='Write')
 async def gen_epi(call : CallbackQuery, state: FSMContext):
@@ -594,15 +598,15 @@ async def gen_epi(call : CallbackQuery, state: FSMContext):
 async def table6_11(message : Message, state: FSMContext, bot: Bot):
     await state.update_data(epitath = message.text)
     await message.answer('Напишите автора эпитафии\n\n(им можете стать вы или кто-то другой)')
-
     await state.set_state(PageWAR.state12)
 
-@wr.message(StateFilter(PageWAR.state12), F.text)
-async def table6_11(message : Message, state: FSMContext, bot: Bot):
-    await state.update_data(auth_epi = message.text)
-    await message.answer('Эпитафия успешно сохранена!')
 
+@wr.message(StateFilter(PageWAR.state12), F.text)
+async def table6_11(message : Message, state: FSMContext, session: AsyncSession):
+    await state.update_data(auth_epi = message.text)    
     s = await state.get_data()
+    await message.answer('Эпитафия успешно сохранена!\n\nТеперь вы можете посмотреть страницу, нажав на кнопку', reply_markup=watch(id=s['page_id']))
+    await history(session=session, data=s)
     print(s)
     put(data=s)
 
